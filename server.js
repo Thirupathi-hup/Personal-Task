@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./database');
 const app = express();
-const port =  5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -16,7 +16,7 @@ app.post('/notes', (req, res) => {
     }
 
     const stmt = db.prepare('INSERT INTO notes (title, description, category) VALUES (?, ?, ?)');
-    stmt.run(title, description, category || 'Others', function(err) {
+    stmt.run(title, description, category || 'Others', function (err) {
         if (err) {
             return res.status(500).json({ error: "Failed to create note." });
         }
@@ -58,7 +58,7 @@ app.put('/notes/:id', (req, res) => {
     }
 
     const stmt = db.prepare('UPDATE notes SET title = ?, description = ?, category = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?');
-    stmt.run(title, description, category || 'Others', id, function(err) {
+    stmt.run(title, description, category || 'Others', id, function (err) {
         if (err) {
             return res.status(500).json({ error: "Failed to update note." });
         }
@@ -74,7 +74,7 @@ app.delete('/notes/:id', (req, res) => {
     const { id } = req.params;
 
     const stmt = db.prepare('DELETE FROM notes WHERE id = ?');
-    stmt.run(id, function(err) {
+    stmt.run(id, function (err) {
         if (err) {
             return res.status(500).json({ error: "Failed to delete note." });
         }
